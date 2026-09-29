@@ -1,0 +1,133 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Council Router Report</title><style>
+:root{--bg:#0d1117;--fg:#e6edf3;--mut:#8b949e;--card:#161b22;--line:#30363d}
+@media (prefers-color-scheme:light){:root{--bg:#fff;--fg:#1f2328;--mut:#59636e;--card:#f6f8fa;--line:#d1d9e0}}
+body{background:var(--bg);color:var(--fg);font:14px/1.5 system-ui,sans-serif;max-width:1000px;margin:0 auto;padding:24px 16px}
+h1{margin:0 0 4px} .mut{color:var(--mut)} .sim{background:#9e6a0322;border:1px solid #9e6a03;padding:8px 12px;border-radius:6px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:20px 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px} .stat b{font-size:26px;display:block}
+.task{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0}
+.task header{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:center} h3{margin:0;font-family:ui-monospace,monospace}
+.ok{color:#2ea043} .bad{color:#da3633}
+.lane{display:flex;align-items:center;gap:8px;margin:4px 0} .lane span{width:130px;flex:none;color:var(--mut);font:12px ui-monospace,monospace}
+.track{position:relative;height:14px;flex:1;background:var(--bg);border-radius:3px} .track i{position:absolute;top:0;bottom:0;border-radius:3px}
+.note{color:var(--mut);font-size:12px;margin-top:4px} pre{overflow:auto;background:var(--bg);padding:10px;border-radius:6px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 4px 0 12px}
+</style></head><body>
+<h1>Council Router</h1><p class="mut">3 planners → critic → step executor ⇄ verifier. Baseline = sonnet-5-5 alone. Graded on hidden tests.</p>
+<p class="sim">SIMULATED RUN (--mock): models are stand-ins that replay known bugs. Run without --mock and with an API key for real numbers.</p>
+<div class="stats">
+<div class="stat"><b>6/8</b>baseline pass</div>
+<div class="stat"><b class="ok">8/8</b>council pass</div>
+<div class="stat"><b>2 / 0</b>fixed / broken by council</div>
+<div class="stat"><b>$0.005 → $0.060</b>total cost</div>
+</div>
+<p class="legend mut"><i style="background:#5b8def"></i>plan<i style="background:#a371f7"></i>critic<i style="background:#e3a008"></i>code
+<i style="background:#2ea043"></i>verify pass<i style="background:#da3633"></i>verify fail — hover bars for details</p>
+
+<section class="task">
+  <header><h3>roman_to_int</h3><div>baseline <b class="ok">PASS</b> &nbsp; council <b class="ok">PASS</b>
+  &nbsp; <small>1 failed verifications · $0.0070 · 1.5s</small></div></header>
+  <div class="lane"><span>plan haiku-4-5</span><div class="track"><i style="left:0.03%;width:11.30%;background:#5b8def" title="haiku-4-5  0.17s"></i></div></div><div class="lane"><span>plan sonnet-5-5</span><div class="track"><i style="left:0.02%;width:17.50%;background:#5b8def" title="sonnet-5-5  0.26s"></i></div></div><div class="lane"><span>plan opus-5-5</span><div class="track"><i style="left:0.01%;width:23.93%;background:#5b8def" title="opus-5-5  0.36s"></i></div></div><div class="lane"><span>critic</span><div class="track"><i style="left:23.96%;width:25.27%;background:#a371f7" title="opus-5-5  0.38s"></i></div></div><div class="lane"><span>code</span><div class="track"><i style="left:49.23%;width:13.04%;background:#e3a008" title="sonnet-5-5  0.19s"></i><i style="left:65.19%;width:13.78%;background:#e3a008" title="sonnet-5-5  0.20s"></i><i style="left:82.14%;width:14.79%;background:#e3a008" title="sonnet-5-5  0.22s"></i></div></div><div class="lane"><span>verify</span><div class="track"><i style="left:62.28%;width:2.91%;background:#da3633" title="python  0.04s
+assert roman_to_int(&#x27;IV&#x27;) == 4  -&gt;  AssertionError"></i><i style="left:78.97%;width:3.17%;background:#2ea043" title="python  0.05s"></i><i style="left:96.93%;width:3.07%;background:#2ea043" title="python  0.05s"></i></div></div>
+  <details><summary>final code</summary><pre>def roman_to_int(s):
+    v = {&quot;I&quot;: 1, &quot;V&quot;: 5, &quot;X&quot;: 10, &quot;L&quot;: 50, &quot;C&quot;: 100, &quot;D&quot;: 500, &quot;M&quot;: 1000}
+    total = 0
+    for a, b in zip(s, s[1:] + &quot; &quot;):
+        total += -v[a] if v.get(b, 0) &gt; v[a] else v[a]
+    return total</pre></details>
+</section>
+<section class="task">
+  <header><h3>merge_intervals</h3><div>baseline <b class="ok">PASS</b> &nbsp; council <b class="ok">PASS</b>
+  &nbsp; <small>1 failed verifications · $0.0090 · 1.3s</small></div></header>
+  <div class="lane"><span>plan haiku-4-5</span><div class="track"><i style="left:0.05%;width:10.43%;background:#5b8def" title="haiku-4-5  0.14s"></i></div></div><div class="lane"><span>plan sonnet-5-5</span><div class="track"><i style="left:0.04%;width:18.60%;background:#5b8def" title="sonnet-5-5  0.25s"></i></div></div><div class="lane"><span>plan opus-5-5</span><div class="track"><i style="left:0.01%;width:21.15%;background:#5b8def" title="opus-5-5  0.28s"></i></div></div><div class="lane"><span>critic</span><div class="track"><i style="left:21.19%;width:30.07%;background:#a371f7" title="opus-5-5  0.40s"></i></div></div><div class="lane"><span>code</span><div class="track"><i style="left:51.27%;width:12.76%;background:#e3a008" title="sonnet-5-5  0.17s"></i><i style="left:67.49%;width:14.12%;background:#e3a008" title="sonnet-5-5  0.19s"></i><i style="left:85.04%;width:11.70%;background:#e3a008" title="sonnet-5-5  0.16s"></i></div></div><div class="lane"><span>verify</span><div class="track"><i style="left:64.03%;width:3.45%;background:#2ea043" title="python  0.05s"></i><i style="left:81.61%;width:3.43%;background:#da3633" title="python  0.05s
+assert merge_intervals([[1, 5], [2, 3]]) == [[1, 5]]  -&gt;  AssertionError"></i><i style="left:96.73%;width:3.27%;background:#2ea043" title="python  0.04s"></i></div></div>
+  <details><summary>final code</summary><pre>def merge_intervals(intervals):
+    out = []
+    for s, e in sorted(intervals):
+        if out and s &lt;= out[-1][1]:
+            out[-1][1] = max(out[-1][1], e)
+        else:
+            out.append([s, e])
+    return out</pre></details>
+</section>
+<section class="task">
+  <header><h3>is_balanced</h3><div>baseline <b class="bad">FAIL</b> &nbsp; council <b class="ok">PASS</b>
+  &nbsp; <small>1 failed verifications · $0.0084 · 1.2s</small></div></header>
+  <div class="lane"><span>plan haiku-4-5</span><div class="track"><i style="left:0.05%;width:7.54%;background:#5b8def" title="haiku-4-5  0.09s"></i></div></div><div class="lane"><span>plan sonnet-5-5</span><div class="track"><i style="left:0.03%;width:14.79%;background:#5b8def" title="sonnet-5-5  0.18s"></i></div></div><div class="lane"><span>plan opus-5-5</span><div class="track"><i style="left:0.01%;width:22.06%;background:#5b8def" title="opus-5-5  0.27s"></i></div></div><div class="lane"><span>critic</span><div class="track"><i style="left:22.10%;width:24.46%;background:#a371f7" title="opus-5-5  0.30s"></i></div></div><div class="lane"><span>code</span><div class="track"><i style="left:46.58%;width:10.69%;background:#e3a008" title="sonnet-5-5  0.13s"></i><i style="left:61.20%;width:19.35%;background:#e3a008" title="sonnet-5-5  0.24s"></i><i style="left:84.17%;width:11.81%;background:#e3a008" title="sonnet-5-5  0.15s"></i></div></div><div class="lane"><span>verify</span><div class="track"><i style="left:57.27%;width:3.93%;background:#2ea043" title="python  0.05s"></i><i style="left:80.55%;width:3.62%;background:#da3633" title="python  0.04s
+assert is_balanced(&#x27;((&#x27;) == False  -&gt;  AssertionError
+assert is_balanced(&#x27;((&#x27;) == False  -&gt;  AssertionError"></i><i style="left:95.98%;width:4.02%;background:#2ea043" title="python  0.05s"></i></div></div>
+  <details><summary>final code</summary><pre>def is_balanced(s):
+    pairs = {&quot;)&quot;: &quot;(&quot;, &quot;]&quot;: &quot;[&quot;, &quot;}&quot;: &quot;{&quot;}
+    stack = []
+    for c in s:
+        if c in &quot;([{&quot;:
+            stack.append(c)
+        elif c in pairs:
+            if not stack or stack.pop() != pairs[c]:
+                return False
+    return not stack</pre></details>
+</section>
+<section class="task">
+  <header><h3>rle_encode</h3><div>baseline <b class="ok">PASS</b> &nbsp; council <b class="ok">PASS</b>
+  &nbsp; <small>0 failed verifications · $0.0061 · 1.2s</small></div></header>
+  <div class="lane"><span>plan haiku-4-5</span><div class="track"><i style="left:0.04%;width:11.65%;background:#5b8def" title="haiku-4-5  0.14s"></i></div></div><div class="lane"><span>plan opus-5-5</span><div class="track"><i style="left:0.01%;width:18.49%;background:#5b8def" title="opus-5-5  0.22s"></i></div></div><div class="lane"><span>plan sonnet-5-5</span><div class="track"><i style="left:0.03%;width:20.93%;background:#5b8def" title="sonnet-5-5  0.25s"></i></div></div><div class="lane"><span>critic</span><div class="track"><i style="left:20.98%;width:34.27%;background:#a371f7" title="opus-5-5  0.41s"></i></div></div><div class="lane"><span>code</span><div class="track"><i style="left:55.25%;width:14.15%;background:#e3a008" title="sonnet-5-5  0.17s"></i><i style="left:73.85%;width:22.50%;background:#e3a008" title="sonnet-5-5  0.27s"></i></div></div><div class="lane"><span>verify</span><div class="track"><i style="left:69.41%;width:4.44%;background:#2ea043" title="python  0.05s"></i><i style="left:96.35%;width:3.65%;background:#2ea043" title="python  0.04s"></i></div></div>
+  <details><summary>final code</summary><pre>from itertools import groupby
+
+def rle_encode(s):
+    return &quot;&quot;.join(f&quot;{k}{len(list(g))}&quot; for k, g in groupby(s))</pre></details>
+</section>
+<section class="task">
+  <header><h3>parse_duration</h3><div>baseline <b class="ok">PASS</b> &nbsp; council <b class="ok">PASS</b>
+  &nbsp; <small>0 failed verifications · $0.0062 · 1.2s</small></div></header>
+  <div class="lane"><span>plan haiku-4-5</span><div class="track"><i style="left:0.03%;width:10.08%;background:#5b8def" title="haiku-4-5  0.12s"></i></div></div><div class="lane"><span>plan sonnet-5-5</span><div class="track"><i style="left:0.02%;width:19.01%;background:#5b8def" title="sonnet-5-5  0.23s"></i></div></div><div class="lane"><span>plan opus-5-5</span><div class="track"><i style="left:0.01%;width:27.60%;background:#5b8def" title="opus-5-5  0.33s"></i></div></div><div class="lane"><span>critic</span><div class="track"><i style="left:27.64%;width:19.60%;background:#a371f7" title="opus-5-5  0.24s"></i></div></div><div class="lane"><span>code</span><div class="track"><i style="left:47.25%;width:22.95%;background:#e3a008" title="sonnet-5-5  0.28s"></i><i style="left:74.04%;width:22.03%;background:#e3a008" title="sonnet-5-5  0.27s"></i></div></div><div class="lane"><span>verify</span><div class="track"><i style="left:70.20%;width:3.84%;background:#2ea043" title="python  0.05s"></i><i style="left:96.07%;width:3.93%;background:#2ea043" title="python  0.05s"></i></div></div>
+  <details><summary>final code</summary><pre>import re
+
+def parse_duration(s):
+    mult = {&quot;h&quot;: 3600, &quot;m&quot;: 60, &quot;s&quot;: 1}
+    return sum(int(n) * mult[u] for n, u in re.findall(r&quot;(\d+)([hms])&quot;, s))</pre></details>
+</section>
+<section class="task">
+  <header><h3>top_k_frequent</h3><div>baseline <b class="bad">FAIL</b> &nbsp; council <b class="ok">PASS</b>
+  &nbsp; <small>0 failed verifications · $0.0071 · 1.2s</small></div></header>
+  <div class="lane"><span>plan haiku-4-5</span><div class="track"><i style="left:0.04%;width:10.80%;background:#5b8def" title="haiku-4-5  0.13s"></i></div></div><div class="lane"><span>plan sonnet-5-5</span><div class="track"><i style="left:0.03%;width:11.36%;background:#5b8def" title="sonnet-5-5  0.14s"></i></div></div><div class="lane"><span>plan opus-5-5</span><div class="track"><i style="left:0.01%;width:16.59%;background:#5b8def" title="opus-5-5  0.20s"></i></div></div><div class="lane"><span>critic</span><div class="track"><i style="left:16.64%;width:32.63%;background:#a371f7" title="opus-5-5  0.39s"></i></div></div><div class="lane"><span>code</span><div class="track"><i style="left:49.27%;width:23.11%;background:#e3a008" title="sonnet-5-5  0.28s"></i><i style="left:76.28%;width:19.03%;background:#e3a008" title="sonnet-5-5  0.23s"></i></div></div><div class="lane"><span>verify</span><div class="track"><i style="left:72.39%;width:3.90%;background:#2ea043" title="python  0.05s"></i><i style="left:95.31%;width:4.69%;background:#2ea043" title="python  0.06s"></i></div></div>
+  <details><summary>final code</summary><pre>from collections import Counter
+
+def top_k_frequent(words, k):
+    c = Counter(words)
+    return sorted(c, key=lambda w: (-c[w], w))[:k]</pre></details>
+</section>
+<section class="task">
+  <header><h3>semver_compare</h3><div>baseline <b class="ok">PASS</b> &nbsp; council <b class="ok">PASS</b>
+  &nbsp; <small>1 failed verifications · $0.0066 · 1.4s</small></div></header>
+  <div class="lane"><span>plan haiku-4-5</span><div class="track"><i style="left:0.03%;width:5.34%;background:#5b8def" title="haiku-4-5  0.08s"></i></div></div><div class="lane"><span>plan opus-5-5</span><div class="track"><i style="left:0.01%;width:13.06%;background:#5b8def" title="opus-5-5  0.19s"></i></div></div><div class="lane"><span>plan sonnet-5-5</span><div class="track"><i style="left:0.02%;width:13.33%;background:#5b8def" title="sonnet-5-5  0.19s"></i></div></div><div class="lane"><span>critic</span><div class="track"><i style="left:13.37%;width:28.57%;background:#a371f7" title="opus-5-5  0.41s"></i></div></div><div class="lane"><span>code</span><div class="track"><i style="left:41.95%;width:16.08%;background:#e3a008" title="sonnet-5-5  0.23s"></i><i style="left:61.16%;width:17.49%;background:#e3a008" title="sonnet-5-5  0.25s"></i><i style="left:81.96%;width:14.85%;background:#e3a008" title="sonnet-5-5  0.21s"></i></div></div><div class="lane"><span>verify</span><div class="track"><i style="left:58.02%;width:3.13%;background:#2ea043" title="python  0.04s"></i><i style="left:78.65%;width:3.32%;background:#da3633" title="python  0.05s
+assert semver_compare(&#x27;1.2.0&#x27;, &#x27;1.10.0&#x27;) == -1  -&gt;  AssertionError
+assert semver_compare(&#x27;1.2.0&#x27;, &#x27;1.10.0&#x27;) == -1  -&gt;  AssertionError"></i><i style="left:96.81%;width:3.19%;background:#2ea043" title="python  0.05s"></i></div></div>
+  <details><summary>final code</summary><pre>def semver_compare(a, b):
+    x, y = [tuple(map(int, v.split(&quot;.&quot;))) for v in (a, b)]
+    return (x &gt; y) - (x &lt; y)</pre></details>
+</section>
+<section class="task">
+  <header><h3>flatten</h3><div>baseline <b class="ok">PASS</b> &nbsp; council <b class="ok">PASS</b>
+  &nbsp; <small>5 failed verifications · $0.0094 · 2.1s</small></div></header>
+  <div class="lane"><span>plan sonnet-5-5</span><div class="track"><i style="left:0.01%;width:7.71%;background:#5b8def" title="sonnet-5-5  0.16s"></i></div></div><div class="lane"><span>plan haiku-4-5</span><div class="track"><i style="left:0.02%;width:8.15%;background:#5b8def" title="haiku-4-5  0.17s"></i></div></div><div class="lane"><span>plan opus-5-5</span><div class="track"><i style="left:0.01%;width:16.27%;background:#5b8def" title="opus-5-5  0.33s"></i></div></div><div class="lane"><span>critic</span><div class="track"><i style="left:16.29%;width:17.55%;background:#a371f7" title="opus-5-5  0.36s"></i></div></div><div class="lane"><span>code</span><div class="track"><i style="left:33.85%;width:12.83%;background:#e3a008" title="sonnet-5-5  0.26s"></i><i style="left:49.00%;width:11.27%;background:#e3a008" title="sonnet-5-5  0.23s"></i><i style="left:62.61%;width:6.50%;background:#e3a008" title="sonnet-5-5  0.13s"></i><i style="left:71.42%;width:10.83%;background:#e3a008" title="sonnet-5-5  0.22s"></i><i style="left:84.48%;width:10.82%;background:#e3a008" title="sonnet-5-5  0.22s"></i></div></div><div class="lane"><span>verify</span><div class="track"><i style="left:46.68%;width:2.32%;background:#da3633" title="python  0.05s
+assert flatten([1, [2, [3, [4]]]]) == [1, 2, 3, 4]  -&gt;  AssertionError"></i><i style="left:60.26%;width:2.35%;background:#2ea043" title="python  0.05s"></i><i style="left:69.11%;width:2.31%;background:#da3633" title="python  0.05s
+assert flatten([1, [2, [3, [4]]]]) == [1, 2, 3, 4]  -&gt;  AssertionError
+assert flatten([1, [2, [3, [4]]]]) == [1, 2, 3, 4]  -&gt;  AssertionError
+assert flatten([[[1]]]) == [1]  -&gt;  AssertionError"></i><i style="left:82.25%;width:2.23%;background:#da3633" title="python  0.05s
+assert flatten([1, [2, [3, [4]]]]) == [1, 2, 3, 4]  -&gt;  AssertionError
+assert flatten([1, [2, [3, [4]]]]) == [1, 2, 3, 4]  -&gt;  AssertionError
+assert flatten([[[1]]]) == [1]  -&gt;  AssertionError"></i><i style="left:95.31%;width:2.41%;background:#da3633" title="python  0.05s
+assert flatten([1, [2, [3, [4]]]]) == [1, 2, 3, 4]  -&gt;  AssertionError
+assert flatten([1, [2, [3, [4]]]]) == [1, 2, 3, 4]  -&gt;  AssertionError
+assert flatten([[[1]]]) == [1]  -&gt;  AssertionError"></i><i style="left:97.72%;width:2.28%;background:#da3633" title="python  0.05s
+assert flatten([1, [2, [3, [4]]]]) == [1, 2, 3, 4]  -&gt;  AssertionError"></i></div></div><div class="note">⚠ step 2 checks quarantined after 3 failed attempts</div>
+  <details><summary>final code</summary><pre>def flatten(x):
+    out = []
+    for i in x:
+        if isinstance(i, (list, tuple)):
+            out.extend(flatten(i))
+        else:
+            out.append(i)
+    return out</pre></details>
+</section></body></html>
