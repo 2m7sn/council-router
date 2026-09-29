@@ -23,7 +23,7 @@ def test_verifier_survives_crashes_hangs_and_cheats():
 
 
 def test_plan_parsing_keeps_only_real_checks():
-    text = 'Sure {thing}. ```json\n{"steps": [{"goal": "g", "checks": ["assert f(1) == 1", "f(1) == 2", "assert f( == 1"]}]}\n```'
+    text = 'Sure {thing}. ```json\n{"steps": [{"goal": "g", "checks": ["assert f(1) == 1", "f(1) == 2", "assert f( == 1", "assertEqual(f(1), 1)"]}]}\n```'
     assert extract_plan(text) == [{"goal": "g", "checks": ["assert f(1) == 1"]}]
     assert extract_code("snippet ```py\na = 1\n``` full ```python\na = 1\nb = 2\n```") == "a = 1\nb = 2"
 

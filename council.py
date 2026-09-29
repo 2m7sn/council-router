@@ -6,6 +6,7 @@ Benchmarked against the same executor model working alone.
     python council.py               # real Claude models (needs ANTHROPIC_API_KEY)
 """
 import argparse
+import ast
 import html
 import json
 import os
@@ -170,13 +171,11 @@ def extract_plan(text):
 
 def is_check(c):
     """Only real, compilable asserts: a bare `f(x) == 1` would pass without checking anything."""
-    if not isinstance(c, str) or not c.lstrip().startswith("assert"):
-        return False
     try:
-        compile(c, "<check>", "exec")
-        return True
+        body = ast.parse(c).body if isinstance(c, str) else []
     except SyntaxError:
         return False
+    return bool(body) and all(isinstance(n, ast.Assert) for n in body)
 
 
 def verify(code, checks, timeout=10):
